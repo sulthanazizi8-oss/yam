@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stroke Order 山 - Final</title>
+
+<style>
+body{
+    margin:0;
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:Arial, sans-serif;
+}
+
+svg{
+    width:320px;
+    height:320px;
+}
+
+path{
+    fill:none;
+    stroke-width:18;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.number{
+    font-size:24px;
+    font-weight:bold;
+    opacity:0;
+    transition:opacity .3s ease;
+}
+</style>
+</head>
+
+<body>
+
+<svg viewBox="0 0 200 200">
+
+    <!-- 1. Tengah -->
+    <path id="s1" stroke="#2563eb"
+          d="M100 35 L100 150"/>
+    <text id="n1" class="number" fill="#2563eb"
+          x="108" y="30">1</text>
+
+    <!-- 2. Kiri -->
+    <path id="s2" stroke="#059669"
+          d="M65 75 L65 150 L145 150"/>
+    <text id="n2" class="number" fill="#059669"
+          x="45" y="75">2</text>
+
+    <!-- 3. Kanan -->
+    <path id="s3" stroke="#dc2626"
+          d="M155 75 L155 150"/>
+    <text id="n3" class="number" fill="#dc2626"
+          x="165" y="75">3</text>
+
+</svg>
+
+<script>
+const strokes = [
+    { path: document.getElementById("s1"), num: document.getElementById("n1") },
+    { path: document.getElementById("s2"), num: document.getElementById("n2") },
+    { path: document.getElementById("s3"), num: document.getElementById("n3") }
+];
+
+// Setup dash
+strokes.forEach(s=>{
+    const len = s.path.getTotalLength();
+    s.path.style.strokeDasharray = len;
+    s.path.style.strokeDashoffset = len;
+});
+
+function animateStroke(obj, duration){
+    return new Promise(resolve=>{
+        obj.path.style.transition = `stroke-dashoffset ${duration}ms ease`;
+        obj.path.style.strokeDashoffset = 0;
+        obj.num.style.opacity = 1;
+        setTimeout(resolve, duration);
+    });
+}
+
+function resetStroke(obj){
+    obj.path.style.transition = "none";
+    const len = obj.path.getTotalLength();
+    obj.path.style.strokeDashoffset = len;
+    obj.num.style.opacity = 0;
+}
+
+async function loop(){
+    while(true){
+
+        await animateStroke(strokes[0], 700);
+        await animateStroke(strokes[1], 700);
+        await animateStroke(strokes[2], 700);
+
+        await new Promise(r=>setTimeout(r,600));
+
+        strokes.forEach(resetStroke);
+
+        await new Promise(r=>setTimeout(r,300));
+    }
+}
+
+loop();
+</script>
+
+</body>
+</html>
